@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solo Adventure Guided Journal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background-color: #6200ee;
+            color: #fff;
+            width: 100%;
+            text-align: center;
+            padding: 1rem 0;
+            margin-bottom: 1rem;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            padding: 1rem;
+        }
+        .section {
+            display: none;
+            margin-bottom: 1rem;
+        }
+        button {
+            display: block;
+            margin: 1rem auto;
+            padding: 0.5rem 1rem;
+            border: none;
+            background-color: #6200ee;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #3700b3;
+        }
+        input, textarea {
+            width: 100%;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 0.5rem 0;
+            background: #e0e0e0;
+            padding: 0.5rem;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Solo Adventure Guided Journal</h1>
+    </header>
+    <div class="container">
+        <button onclick="showSection('shareMood')">Share Mood</button>
+        <button onclick="showSection('addGoal')">Add Goal</button>
+        <button onclick="showSection('progress')">Progress</button>
+
+        <div id="shareMood" class="section">
+            <h2>Share Mood</h2>
+            <label for="bothering">What is bothering you right now?</label>
+            <textarea id="bothering"></textarea>
+
+            <label for="smallAction">One small action you can do right now?</label>
+            <textarea id="smallAction"></textarea>
+
+            <label for="song">A song you forgot about but used to like? Listen to it:</label>
+            <textarea id="song"></textarea>
+
+            <button onclick="saveMood()">Save</button>
+        </div>
+
+        <div id="addGoal" class="section">
+            <h2>Add Goal</h2>
+            <label for="newGoal">Enter your goal:</label>
+            <textarea id="newGoal"></textarea>
+            <button onclick="addGoal()">Add Goal</button>
+            <h3>Previous Goals</h3>
+            <ul id="goalList"></ul>
+        </div>
+
+        <div id="progress" class="section">
+            <h2>Progress</h2>
+            <h3>Goals Checklist</h3>
+            <ul id="progressList"></ul>
+        </div>
+    </div>
+
+    <script>
+        let goals = [];
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        function saveMood() {
+            const bothering = document.getElementById('bothering').value;
+            const smallAction = document.getElementById('smallAction').value;
+            const song = document.getElementById('song').value;
+
+            if (bothering && smallAction && song) {
+                alert("Your mood has been recorded! Keep going!");
+            } else {
+                alert("Please fill out all fields!");
+            }
+        }
+
+        function addGoal() {
+            const goal = document.getElementById('newGoal').value;
+
+            if (goal) {
+                goals.push({ text: goal, completed: false });
+                document.getElementById('newGoal').value = '';
+                renderGoals();
+            } else {
+                alert("Please enter a goal!");
+            }
+        }
+
+        function renderGoals() {
+            const goalList = document.getElementById('goalList');
+            const progressList = document.getElementById('progressList');
+
+            goalList.innerHTML = '';
+            progressList.innerHTML = '';
+
+            goals.forEach((goal, index) => {
+                const li = document.createElement('li');
+                li.textContent = goal.text;
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = goal.completed;
+                checkbox.onchange = () => {
+                    goals[index].completed = checkbox.checked;
+                    renderGoals();
+                };
+
+                const progressLi = li.cloneNode(true);
+                progressLi.appendChild(checkbox);
+
+                goalList.appendChild(li);
+                progressList.appendChild(progressLi);
+            });
+        }
+    </script>
+</body>
+</html>
